@@ -1,4 +1,4 @@
-package com.miracle.worldcount;
+package com.miracle.wordcount;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.typeinfo.Types;

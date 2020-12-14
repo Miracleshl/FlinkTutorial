@@ -1,5 +1,6 @@
 package com.miracle.sourceapi;
 
+import com.miracle.bean.Sensor;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

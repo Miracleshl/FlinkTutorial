@@ -1,6 +1,6 @@
 package com.miracle.transform;
 
-import com.miracle.sourceapi.Sensor;
+import com.miracle.bean.Sensor;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.ConnectedStreams;
@@ -104,7 +104,7 @@ public class TransformApiTest {
     public void transformConnect() throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
-        String path = "D:\\bigData\\flink\\FlinkTutorial\\src\\main\\resources\\sensor.txt";
+        String path = "E:\\bigData\\flink\\FlinkTutorial\\src\\main\\resources\\sensor.txt";
         DataStream<String> dataStream = env.readTextFile(path);
         //样例类转换
         DataStream<Sensor> sensorDataStream = dataStream.map(data -> {
@@ -128,8 +128,7 @@ public class TransformApiTest {
         });
         DataStream<Sensor> highStream = splitStream.select("high");
         DataStream<Sensor> lowStream = splitStream.select("low");
-        DataStream<Tuple2<String,Double>> warningStream = highStream.map(sensor -> Tuple2.of(sensor.getId(),sensor.getTemperature()))
-                .returns(Types.TUPLE(Types.STRING,Types.DOUBLE));
+        DataStream<Tuple2<String,Double>> warningStream = highStream.map(sensor -> Tuple2.of(sensor.getId(),sensor.getTemperature()),Types.TUPLE(Types.STRING,Types.DOUBLE));
         ConnectedStreams<Tuple2<String,Double>,Sensor> connectedStreams = warningStream.connect(lowStream);
         DataStream<String> result = connectedStreams.map(new CoMapFunction<Tuple2<String,Double>,Sensor,String>() {
             @Override

@@ -1,6 +1,6 @@
 package com.miracle.sink;
 
-import com.miracle.sourceapi.Sensor;
+import com.miracle.bean.Sensor;
 import com.miracle.sourceapi.SourceApiTest;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
