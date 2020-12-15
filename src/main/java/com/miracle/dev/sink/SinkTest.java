@@ -47,8 +47,8 @@ public class SinkTest {
         sinkStream.print();
         sinkStream.writeAsCsv("D:\\fileSink\\output.txt", FileSystem.WriteMode.OVERWRITE,"\n",",")
                 .setParallelism(1);
-        sinkStream.writeAsText("D:\\fileSink\\output.txt", FileSystem.WriteMode.OVERWRITE)
-                .setParallelism(1);
+//        sinkStream.writeAsText("D:\\fileSink\\output.txt", FileSystem.WriteMode.OVERWRITE)
+//                .setParallelism(1);
         environment.execute("");
     }
 
