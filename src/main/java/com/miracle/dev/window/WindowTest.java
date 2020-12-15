@@ -49,9 +49,6 @@ public class WindowTest {
                 });
         sink.print();
         sink.writeAsText("D:\\fileSink\\output1.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
-        File file = new File("");
-
-
         env.execute("Time window");
     }
 }
