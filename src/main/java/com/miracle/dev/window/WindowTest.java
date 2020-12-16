@@ -7,6 +7,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
@@ -42,7 +43,7 @@ public class WindowTest {
             collector.collect(Tuple2.of(arr[0], Double.valueOf(arr[2])));
         }, Types.TUPLE(Types.STRING, Types.DOUBLE))
                 .keyBy(tuple -> tuple.f0)
-                .window(TumblingProcessingTimeWindows.of(Time.seconds(10L)))
+                .window(TumblingEventTimeWindows.of(Time.seconds(10L)))
                 .reduce((latest,current)->{
                     latest.setField(Double.min(latest.f1, current.f1),1);
                     return latest;
@@ -52,7 +53,6 @@ public class WindowTest {
         env.execute("Time window");
     }
 }
-
 class MyProcessWindowFunction extends ProcessWindowFunction<Tuple2<String, Double>, Tuple2<String, Double>, String, TimeWindow> {
     @Override
     public void process(String key, Context context, Iterable<Tuple2<String, Double>> elements, Collector<Tuple2<String, Double>> out) throws Exception {

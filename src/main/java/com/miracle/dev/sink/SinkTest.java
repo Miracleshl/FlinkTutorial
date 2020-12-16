@@ -7,6 +7,7 @@ import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.Path;
+import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
@@ -30,6 +31,8 @@ public class SinkTest {
     @Test
     public void kafkaSink() throws Exception {
         StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
+        environment.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
+        environment.getConfig().setAutoWatermarkInterval(300);
         String path = "D:\\bigData\\flink\\FlinkTutorial\\src\\main\\resources\\sensor.txt";
         DataStream<String> fileSource = environment.readTextFile(path);
         DataStream<Tuple3<String, String, String>> sinkStream = fileSource.map(line -> {
@@ -104,7 +107,7 @@ public class SinkTest {
                 .setTimeout(100)
                 .build();
 
-        sinkStream.addSink(new RedisSink<>(config, new RedisMapper<>() {
+        sinkStream.addSink(new RedisSink<>(config, new RedisMapper<Tuple3<String, String, String>>() {
 
             @Override
             public RedisCommandDescription getCommandDescription() {
@@ -135,7 +138,7 @@ public class SinkTest {
             String[] fields = line.split(",");
             return Tuple3.of(fields[0], fields[1], fields[2]);
         }, Types.TUPLE(Types.STRING, Types.STRING, Types.STRING));
-        sinkStream.addSink(new RichSinkFunction<>() {
+        sinkStream.addSink(new RichSinkFunction<Tuple3<String, String, String>>() {
             PreparedStatement insert = null;
             PreparedStatement update = null;
             Connection connection = null;

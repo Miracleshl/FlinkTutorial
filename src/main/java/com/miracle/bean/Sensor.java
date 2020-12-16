@@ -13,7 +13,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class Sensor implements Serializable {
+    @FieldOrder(3)
     private String id;
+    @FieldOrder(2)
     private Long timestamp;
+    @FieldOrder(1)
     private Double temperature;
 }
