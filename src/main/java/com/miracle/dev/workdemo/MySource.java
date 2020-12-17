@@ -10,7 +10,7 @@ public class MySource implements SourceFunction<Sensor> {
     @Override
     public void run(SourceContext<Sensor> ctx) throws Exception {
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100000; i++) {
             ctx.collect(Sensor.builder().id(String.valueOf(random.nextInt(4))).temperature(100D).timestamp(100L).build());
             Thread.sleep(1000L);
         }

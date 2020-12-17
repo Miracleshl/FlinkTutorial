@@ -81,7 +81,7 @@ public class WindowsApiTest {
         //每15秒统计一次各传感器平均值
         sensorDataStream.map(sensor -> new Tuple3<>(sensor.getId(), sensor.getTemperature(), sensor.getTimestamp()))
                 .returns(Types.TUPLE(Types.STRING, Types.DOUBLE, Types.LONG))
-                .assignTimestampsAndWatermarks(strategy.withIdleness(Duration.ZERO))
+                .assignTimestampsAndWatermarks(strategy)
 //                .assignTimestampsAndWatermarks(WatermarkStrategy.<Tuple3<String, Double, Long>>forBoundedOutOfOrderness(Duration.ofMillis(30)).withTimestampAssigner((element, recordTimestamp) -> element.f2))
                 .keyBy(tuple -> tuple.f0)
                 //底层通过时间戳处理 但是默认是伦敦时间所以在按照day开窗是要注意

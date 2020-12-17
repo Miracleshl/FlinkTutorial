@@ -21,8 +21,10 @@ import java.util.stream.Collectors;
 public class WorkDemo {
     @Test
     public void pojoBean() throws Exception {
-        StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
+        //获取分流tag标识
         Set<String> tagCollection = getTagCollection();
+        //获取分流tag对应的数据分割符信息
+        StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStream<Sensor> sourceAll = environment.addSource(new MySource());
         //输出所有信息
         sourceAll.addSink(writeUsingOutputFormat("D:\\flinkSink\\" + LocalDate.now().toString() + "\\86.txt", FileSystem.WriteMode.OVERWRITE, "\n", "|")).setParallelism(1);
@@ -59,13 +61,17 @@ public class WorkDemo {
         environment.execute("report txt");
     }
 
-    private static Set<String> getTagCollection() {
+    private static Set<String> getTagCollection() throws InterruptedException {
         List<Sensor> list = new ArrayList<>();
         list.add(Sensor.builder().id("1").temperature(100D).timestamp(100L).build());
         list.add(Sensor.builder().id("2").temperature(100D).timestamp(100L).build());
         list.add(Sensor.builder().id("3").temperature(100D).timestamp(100L).build());
         list.add(Sensor.builder().id("0").temperature(100D).timestamp(100L).build());
         Set<String> tagCollection = list.parallelStream().map(sensor -> sensor.getId()).collect(Collectors.toSet());
+        for (int i = 0; i < 5; i++) {
+            System.out.println(i+1);
+            Thread.sleep(1000L);
+        }
         return tagCollection;
     }
 
