@@ -20,13 +20,14 @@ public class WindowsApiTest {
     @Test
     public void windowsApiOld() throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setParallelism(1);
         //以事件时间驱动
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         //watermark生成周期间隔
         env.getConfig().setAutoWatermarkInterval(50);
 //        String path = "E:\\bigData\\flink\\FlinkTutorial\\src\\main\\resources\\sensor.txt";
 //        DataStream<String> source = env.readTextFile(path);
-        DataStream<String> source = env.socketTextStream("192.168.137.128", 7777);
+        DataStream<String> source = env.socketTextStream("192.168.3.9", 7777);
         DataStream<Sensor> sensorDataStream = source.map(line -> {
             String[] strings = line.split(",");
             Sensor sensor = new Sensor(strings[0], Long.valueOf(strings[1]), Double.valueOf(strings[2]));
@@ -48,7 +49,7 @@ public class WindowsApiTest {
 //                .window(EventTimeSessionWindows.withGap(Time.seconds(10)))
 //                .countWindow(1L)
                 .timeWindow(Time.seconds(15))
-                .allowedLateness(Time.seconds(1))
+                .allowedLateness(Time.minutes(1))
                 .sideOutputLateData(lateTag)
                 .reduce((curRes, newData) -> {
                     curRes.setTemperature(Double.min(curRes.getTemperature(), newData.getTemperature()));

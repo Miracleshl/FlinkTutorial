@@ -1,7 +1,9 @@
 package com.miracle.bean;
 
-import com.esotericsoftware.kryo.DefaultSerializer;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
